@@ -27,7 +27,7 @@ String message = "";
 String json;
 
 DynamicJsonDocument receivedDoc(1024);
-String recievedMessage ; 
+String recievedMessage , prevMessage ; 
 Scheduler userScheduler; 
 painlessMesh  mesh;
 
@@ -36,22 +36,14 @@ painlessMesh  mesh;
 void sendMessage() ; 
 
 
-Task taskSendMessage( TASK_SECOND * 20 , TASK_FOREVER, &sendMessage );
+Task taskSendMessage( TASK_SECOND * 2 , TASK_FOREVER, &sendMessage );
 
 
 void sendMessage()
 {
-  DynamicJsonDocument doc(1024);
-  doc["mode"] = mode ;
-  doc["status"] =  led_status;
- JsonArray board_status = doc.createNestedArray("board_status");
-  // board_status.add(1);
-  board_status.add(2);
-  String msg ;
-  serializeJson(doc, msg);
-  mesh.sendBroadcast( msg );
-  Serial.print("Mesh Broadcast - "); Serial.println(msg);
- taskSendMessage.setInterval((TASK_SECOND * 20));
+  mesh.sendBroadcast( recievedMessage );
+  Serial.print("Mesh Broadcast - "); Serial.println(recievedMessage);
+ taskSendMessage.setInterval((TASK_SECOND * 2));
 }
 
 
@@ -99,12 +91,20 @@ void loop()
    recievedMessage = Serial2.readString().c_str();  
   DeserializationError error = deserializeJson(receivedDoc, recievedMessage);
    Serial.print("board 1 Reciever - "); Serial.println(recievedMessage);
+      
   }
+  if ( recievedMessage != "" && !recievedMessage.equals(prevMessage))
+  {
+    prevMessage = recievedMessage ;
+    mesh.update();
+   recievedMessage = "";
 
-  Serial2.println("Hello from ESP32-1");  
+  }
+  else {
+    Serial.println("No message to broadcast");
+  }
   
   
-  mesh.update();
-  delay(1000);
-  //timer.run();
+  delay(2000);
+  
 }

@@ -32,7 +32,7 @@ void testMessage(DynamicJsonDocument& receivedDoc) {
 void testModes (DynamicJsonDocument& receivedDoc ) {
 //  Nedded data
 int ldrValue = analogRead(args.ldrpin);
-args.mode = receivedDoc["mode"].as<String>() ;
+args.mode = receivedDoc["mode"].as<int>() ;
 args.led_status = receivedDoc["status"];
 
 
@@ -52,9 +52,18 @@ Serial.println("board number is : ") ;
 if (receivedDoc.containsKey("board_status")) {
       JsonArray board_status = receivedDoc["board_status"].as<JsonArray>();  
 
-// Mode Specific
 
-      if (args.mode == "specific"){
+// Mode Monotone = 1
+        
+         if (args.mode == 1 && ldrValue < 1000)
+       {
+        digitalWrite(args.led , args.led_status);
+       }
+
+
+// Mode Specific-monotone = 2
+
+      if (args.mode == 2 ){
         bool found = false;
         for (JsonVariant value : board_status) {
             if (value.is<int>() && value.as<int>() == args.boardnum) {
@@ -70,18 +79,9 @@ if (receivedDoc.containsKey("board_status")) {
           }}
 
 
-// Mode Monotone
-        
-         if (args.mode == "monotone" && ldrValue < 1000)
-       {
-        digitalWrite(args.led , args.led_status);
-       }
-
-
-
 // Mode Specific-on
 
-        if (args.mode == "specific-on"){
+        if (args.mode == 3){
         bool found = false;
         for (JsonVariant value : board_status) {
             if (value.is<int>() && value.as<int>() == args.boardnum) {
@@ -99,7 +99,7 @@ if (receivedDoc.containsKey("board_status")) {
 
 // Mode Specific-off
 
-         if (args.mode == "specific-off"){
+         if (args.mode == 4){
         bool found = false;
         for (JsonVariant value : board_status) {
             if (value.is<int>() && value.as<int>() == args.boardnum) {
@@ -116,7 +116,7 @@ if (receivedDoc.containsKey("board_status")) {
 
 // Mode all-on
 
-         if (args.mode == "all-on") {
+         if (args.mode == 5) {
       
             digitalWrite(args.led , 1) ; }
 
@@ -125,7 +125,7 @@ if (receivedDoc.containsKey("board_status")) {
 
 // Mode all-off
 
-       if (args.mode == "all-off")
+       if (args.mode == 6)
        {
       
             digitalWrite(args.led , 0) ; }

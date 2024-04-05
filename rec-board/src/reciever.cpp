@@ -18,6 +18,7 @@ MessageArguments arguments;
 DynamicJsonDocument receivedDoc(1024);
 Scheduler userScheduler; 
 painlessMesh  mesh;
+int ldrValue = analogRead(arguments.ldrpin);
 
 
 void sendMessage() ; 
