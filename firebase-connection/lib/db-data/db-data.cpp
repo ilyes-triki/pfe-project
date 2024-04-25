@@ -49,7 +49,7 @@ void sendLocalMessage(int mode , int status)
      board_status.add(localArray[i]);
         }
         doc["mode"] = mode ;
-        doc["status"] = status ;
+        // doc["status"] = status ;
 
   serializeJson(doc , msg) ;
   Serial2.println(msg);
@@ -93,15 +93,15 @@ if (fbdo.dataType() == "integer"){
 
 //  fetching status on-off from db
 
-int getStatus(FirebaseData &fbdo){
- if (Firebase.RTDB.getInt(&fbdo , "options/on-off" )){ 
-if (fbdo.dataType() == "integer"  ){
+// int getStatus(FirebaseData &fbdo){
+//  if (Firebase.RTDB.getInt(&fbdo , "options/on-off" )){ 
+// if (fbdo.dataType() == "integer"  ){
   
-  return fbdo.intData();
+//   return fbdo.intData();
 
-  }
-  }
-};
+//   }
+//   }
+// };
 
 //  fetching updating status from db
  bool getupdated(FirebaseData &fbdo){

@@ -19,10 +19,9 @@
 
 // Variables
 
-int led_status = 1;
-bool message_ready = true;
-bool message_received = false;
-String mode = "specific";
+
+
+
 String message = "";
 String json;
 

@@ -99,19 +99,11 @@ if (updated &&  vars.fetched )
 {
   sendLocalMessage(vars.mode , vars.status);
   if (vars.fetched ) {
-  Firebase.RTDB.setBool(&fbdo , "options/updated" , false );
-  
+  Firebase.RTDB.setBool(&fbdo , "options/updated" , false ); 
 }
 } else {
   Serial.println("Not updated");
 }
-
-
-
-    
-
-
-
  }
 
 

@@ -5,9 +5,9 @@
 #include <Firebase.h>
 #include <ArduinoJson.h>
 
-
+//  status ,
 struct Variables{
-    int  status , localarraySize , mode ;
+    int  localarraySize , mode ;
     bool SignUp , fetched;
     unsigned long sendDataPrevMillis;
 };
