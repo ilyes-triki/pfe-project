@@ -77,7 +77,7 @@ Serial.println("UART Sender/Receiver 2 Initialized");
 
 void loop() {
   bool updated = getupdated(fbdo);
- delay(3000);
+ delay(2000);
 if (Firebase.ready() && vars.SignUp && (millis() - vars.sendDataPrevMillis > 1000 || vars.sendDataPrevMillis == 0)) {
     vars.sendDataPrevMillis = millis();
   if (updated)

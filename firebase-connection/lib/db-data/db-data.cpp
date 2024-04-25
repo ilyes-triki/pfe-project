@@ -91,17 +91,7 @@ if (fbdo.dataType() == "integer"){
 
 
 
-//  fetching status on-off from db
 
-// int getStatus(FirebaseData &fbdo){
-//  if (Firebase.RTDB.getInt(&fbdo , "options/on-off" )){ 
-// if (fbdo.dataType() == "integer"  ){
-  
-//   return fbdo.intData();
-
-//   }
-//   }
-// };
 
 //  fetching updating status from db
  bool getupdated(FirebaseData &fbdo){
