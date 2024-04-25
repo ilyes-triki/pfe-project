@@ -11,20 +11,20 @@ void testMessage(DynamicJsonDocument& receivedDoc) {
     for (JsonObject board : boards_info) {
       if (board["board_number"] == args.boardnum) {
         boardFound = true;
-        board["led_status"] = args.led_status;
+        
         break;
       }
     }
     if (!boardFound) {
       JsonObject newBoard = boards_info.createNestedObject();
       newBoard["board_number"] = args.boardnum;
-      newBoard["led_status"] = args.led_status;
+      newBoard["led_status"] = 0;
     }
   } else {
     JsonArray boards_info = receivedDoc.createNestedArray("boards_info");
     JsonObject newBoard = boards_info.createNestedObject();
     newBoard["board_number"] = args.boardnum;
-    newBoard["led_status"] = args.led_status;
+    newBoard["led_status"] = 0;
   }
 }
 
@@ -33,14 +33,14 @@ void testModes (DynamicJsonDocument& receivedDoc ) {
 //  Nedded data
 int ldrValue = analogRead(args.ldrpin);
 args.mode = receivedDoc["mode"].as<int>() ;
-args.led_status = receivedDoc["status"];
+
 
 
 // Serial messages
 Serial.print("ldr value : ");
   Serial.println(ldrValue);
-Serial.print("ledstatus: ");
-  Serial.println(args.led_status);
+
+
 Serial.print("mode: ");
   Serial.println(args.mode);
 Serial.println("board number is : ") ;
@@ -57,7 +57,7 @@ if (receivedDoc.containsKey("board_status")) {
         
          if (args.mode == 1 && ldrValue < 1000)
        {
-        digitalWrite(args.led , args.led_status);
+        digitalWrite(args.led , 1);
        }
 
 
@@ -73,13 +73,13 @@ if (receivedDoc.containsKey("board_status")) {
         }
           if (found && ldrValue>1500)
           {
-            digitalWrite(args.led , args.led_status) ; 
+            digitalWrite(args.led , 1) ; 
           }else {
              digitalWrite(args.led , 0) ; 
           }}
 
 
-// Mode Specific-on
+// Mode Specific-on = 3
 
         if (args.mode == 3){
         bool found = false;
@@ -90,14 +90,14 @@ if (receivedDoc.containsKey("board_status")) {
             }
         } if (found)
           {
-            digitalWrite(args.led , args.led_status) ; 
+            digitalWrite(args.led , 1) ; 
           }else {
              digitalWrite(args.led , 0) ;  }}
 
 
 
 
-// Mode Specific-off
+// Mode Specific-off = 4
 
          if (args.mode == 4){
         bool found = false;
@@ -108,13 +108,13 @@ if (receivedDoc.containsKey("board_status")) {
             }
         } if (!found)
           {
-            digitalWrite(args.led , args.led_status) ; 
+            digitalWrite(args.led , 1) ; 
           }else {
              digitalWrite(args.led , 0) ; }}
 
 
 
-// Mode all-on
+// Mode all-on = 5
 
          if (args.mode == 5) {
       
@@ -123,7 +123,7 @@ if (receivedDoc.containsKey("board_status")) {
 
 
 
-// Mode all-off
+// Mode all-off = 6
 
        if (args.mode == 6)
        {
