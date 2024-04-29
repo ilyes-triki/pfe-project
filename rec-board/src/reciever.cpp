@@ -28,8 +28,9 @@ Task taskSendMessage( TASK_SECOND * 3, TASK_FOREVER, &sendMessage );
 void sendMessage()
 {
 int ldrValue = analogRead(arguments.ldrLampe);
+int dayOrNigth = analogRead(arguments.ldrpin);
 
-    if (receivedDoc.isNull() && ldrValue > 1000) {
+    if (receivedDoc.isNull() && dayOrNigth < 1000 && ldrValue > 1000 ) {
         Serial.println("No stored message to broadcast.");
         return;
     }
