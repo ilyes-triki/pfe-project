@@ -80,7 +80,6 @@ if (receivedDoc.containsKey("board_status")) {
 
 
 
-
 // Mode Specific-monotone = 2
 
       if (args.mode == 2 ){
@@ -99,7 +98,7 @@ if (receivedDoc.containsKey("board_status")) {
           }}
 
 
-// Mode Specific-on
+// Mode Specific-on = 3
 
         if (args.mode == 3){
         bool found = false;
@@ -110,14 +109,18 @@ if (receivedDoc.containsKey("board_status")) {
             }
         } if (found)
           {
+<<<<<<< HEAD
             digitalWrite(args.led ,1) ; 
+=======
+            digitalWrite(args.led , 1) ; 
+>>>>>>> ebdc1ecaa1cd4c2c1f07aed9e1bfc1e139810ac6
           }else {
              digitalWrite(args.led , 0) ;  }}
 
 
 
 
-// Mode Specific-off
+// Mode Specific-off = 4
 
          if (args.mode == 4){
         bool found = false;
@@ -134,6 +137,24 @@ if (receivedDoc.containsKey("board_status")) {
 
 
 
+<<<<<<< HEAD
+=======
+// Mode all-on = 5
+
+         if (args.mode == 5) {
+      
+            digitalWrite(args.led , 1) ; }
+
+
+
+
+// Mode all-off = 6
+
+       if (args.mode == 6)
+       {
+      
+            digitalWrite(args.led , 0) ; }
+>>>>>>> ebdc1ecaa1cd4c2c1f07aed9e1bfc1e139810ac6
 
   
    }
