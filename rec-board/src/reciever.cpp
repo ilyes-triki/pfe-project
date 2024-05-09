@@ -14,11 +14,12 @@
 
 
 
+
 MessageArguments arguments;
 DynamicJsonDocument receivedDoc(1024);
 Scheduler userScheduler; 
 painlessMesh  mesh;
-int ldrValue = analogRead(arguments.ldrpin);
+int ldrLmapeValue = analogRead(arguments.ldrpinLampe);
 
 
 void sendMessage() ; 
@@ -27,18 +28,8 @@ Task taskSendMessage( TASK_SECOND * 3, TASK_FOREVER, &sendMessage );
 
 void sendMessage()
 {
-    if (receivedDoc.isNull()) {
-        Serial.println("No stored message to broadcast.");
-        return;
-    }
-
-testMessage( receivedDoc) ; 
-    
-    serializeJson(receivedDoc, arguments.jsonBrod);
-    mesh.sendBroadcast(arguments.jsonBrod);
-    Serial.print("Mesh Broadcast - ");
-    Serial.println(arguments.jsonBrod);
-    taskSendMessage.setInterval((TASK_SECOND * 3));
+  
+ 
 
 
 }
@@ -46,20 +37,12 @@ testMessage( receivedDoc) ;
 
 void receivedCallback( uint32_t from, String &msg )
 {
-  arguments.jsonRec = msg.c_str();
-  DeserializationError error = deserializeJson(receivedDoc, arguments.jsonRec);
-  Serial.print("Mesh Reciever - "); Serial.println(arguments.jsonRec);
-  if (error)
-  {
-    Serial.print("deserializeJson() failed: ");
-    Serial.println(error.c_str());
-  }
+  
       
-testModes ( receivedDoc ) ; 
    
 }
 void newConnectionCallback(uint32_t nodeId) {
-  //Serial.printf("--> startHere: New Connection, nodeId = %u\n", nodeId);
+
 }
 
 void changedConnectionCallback() {
@@ -94,4 +77,55 @@ void setup() {
 void loop() {
   // it will run the user scheduler as well
   mesh.update();
+// testModes ( receivedDoc ) ; 
+delay(3000);
     }
+
+
+
+
+// recievecall back 
+
+
+
+// arguments.jsonRec = msg.c_str();
+  // DeserializationError error = deserializeJson(receivedDoc, arguments.jsonRec);
+   
+
+  // Serial.print("Mesh Reciever - "); Serial.println(arguments.jsonRec);
+  // if (error)
+  // {
+  //   Serial.print("deserializeJson() failed: ");
+  //   Serial.println(error.c_str());
+  // }
+
+
+
+  // send 
+
+//   if (receivedDoc.isNull() ) {
+  //     arguments.recieved = false ;
+  //       Serial.println("No stored message to broadcast.");
+  //       return;
+  //   }
+  //   arguments.recieved = true ;
+  //   receivedDoc["message_received"] = arguments.recieved ;
+  // if (ldrLmapeValue > 100)
+  // {
+  //  addArrayToMessage( receivedDoc) ; 
+  //  serializeJson(receivedDoc, arguments.jsonBrod);
+  //  arguments.recieved = false ; 
+  //   mesh.sendBroadcast(arguments.jsonBrod);
+  // }
+  // else {
+  //   serializeJson(receivedDoc, arguments.jsonBrod);
+  //  arguments.recieved = false ; 
+  //   mesh.sendBroadcast(arguments.jsonBrod);
+  // }
+   
+   
+  //   Serial.print("Mesh Broadcast - ");
+  //   Serial.println(arguments.jsonBrod);
+  //   taskSendMessage.setInterval((TASK_SECOND * 3));
+    
+

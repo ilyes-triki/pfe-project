@@ -7,10 +7,10 @@
 #include <ArduinoJson.h>
 #include "db-data.h"
 
-#define WIFI_SSID "TT_91A8"
-#define WIFI_PASSWORD "imcnlqw733"
-// #define WIFI_SSID "OPPO A54"
-// #define WIFI_PASSWORD "1234567890"
+// #define WIFI_SSID "TT_91A8"
+// #define WIFI_PASSWORD "imcnlqw733"
+#define WIFI_SSID "OPPO A54"
+#define WIFI_PASSWORD "1234567890"
 // #define WIFI_SSID "OPPO A78"
 // #define WIFI_PASSWORD "111111111"
 #define PROJECT_API_KEY "AIzaSyBcEzCBBWwtkvcBlmrWu3cNl7MHOF1lYz0"
@@ -84,7 +84,7 @@ if (Firebase.ready() && vars.SignUp && (millis() - vars.sendDataPrevMillis > 100
   {
  fetchedArray = getArray(fbdo);
  vars.mode = getMode(fbdo);
- vars.status = getStatus(fbdo);
+ 
  vars.fetched = true ;
   } 
   
@@ -97,7 +97,7 @@ recieveLocalMessage();
 
 if (updated &&  vars.fetched )
 {
-  sendLocalMessage(vars.mode , vars.status);
+  sendLocalMessage(vars.mode );
   if (vars.fetched ) {
   Firebase.RTDB.setBool(&fbdo , "options/updated" , false );
   

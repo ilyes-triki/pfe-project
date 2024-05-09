@@ -14,8 +14,9 @@ ArrayInfo getArray(FirebaseData &fbdo) {
         result.arraySize = arr.size();
         args.localarraySize = result.arraySize;
         result.arrayPtr = new int[result.arraySize];
-
-        for (size_t i = 0; i < arr.size(); i++) {
+if (result.arraySize != 0 )
+{
+   for (size_t i = 0; i < arr.size(); i++) {
             FirebaseJsonData jsonData;
             arr.get(jsonData, i);
             result.arrayPtr[i] = jsonData.intValue;
@@ -23,13 +24,15 @@ ArrayInfo getArray(FirebaseData &fbdo) {
              size_t copySize = min(result.arraySize, sizeof(localArray) / sizeof(localArray[0]));
         memcpy(localArray, result.arrayPtr, copySize * sizeof(int));
         }
+}
+
+       
         
       
-    delete[] result.arrayPtr;
- 
-        result.arrayPtr = nullptr;
-        result.arraySize = 0;
+    
     } else {
+    args.localarraySize = 0;
+
         result.arraySize = 0;
         result.arrayPtr = nullptr;
     }
@@ -39,17 +42,21 @@ ArrayInfo getArray(FirebaseData &fbdo) {
 
 // sending urat message
 
-void sendLocalMessage(int mode , int status)
+void sendLocalMessage(int mode )
     
  { 
   String msg ;
  DynamicJsonDocument doc(1024);
+ if (args.localarraySize != 0 )
+ {
  JsonArray board_status = doc.createNestedArray("board_status");
   for (size_t i = 0; i < args.localarraySize; i++) {
      board_status.add(localArray[i]);
         }
+ }
+ 
         doc["mode"] = mode ;
-        doc["status"] = status ;
+       
 
   serializeJson(doc , msg) ;
   Serial2.println(msg);
@@ -91,17 +98,9 @@ if (fbdo.dataType() == "integer"){
 
 
 
-//  fetching status on-off from db
 
-int getStatus(FirebaseData &fbdo){
- if (Firebase.RTDB.getInt(&fbdo , "options/on-off" )){ 
-if (fbdo.dataType() == "integer"  ){
-  
-  return fbdo.intData();
 
-  }
-  }
-};
+
 
 //  fetching updating status from db
  bool getupdated(FirebaseData &fbdo){

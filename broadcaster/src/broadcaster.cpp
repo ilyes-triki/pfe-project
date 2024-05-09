@@ -1,4 +1,5 @@
 #include "painlessMesh.h"
+
 #include <ArduinoJson.h>
 #include <SPI.h>
 #include <Wire.h>
@@ -19,45 +20,66 @@
 
 // Variables
 
-int led_status = 1;
-bool message_ready = true;
-bool message_received = false;
-String mode = "specific";
-String message = "";
-String json;
 
-DynamicJsonDocument receivedDoc(1024);
-String recievedMessage , prevMessage ; 
+std::list<uint32_t> connectedNodesList , messageSenderNodes;  // List to store connected node IDs
+
+
+ 
+
+
+DynamicJsonDocument receivedDoc(1024) , receivedDocRec(1024) ,  brodcast(1024);
+String recievedMessage ,  prevMessage , recivedFromRec , sendedToReciever;
+
+   
 Scheduler userScheduler; 
 painlessMesh  mesh;
 
 
-// User stub
+ 
 void sendMessage() ; 
 
 
 Task taskSendMessage( TASK_SECOND * 2 , TASK_FOREVER, &sendMessage );
 
 
+void nodesConnected() {
+
+  // Update the list of connected nodes
+  auto nodeList = mesh.getNodeList();
+  connectedNodesList.assign(nodeList.begin(), nodeList.end());
+
+  // Print the list of connected nodes
+  Serial.println("Connected Nodes:");
+  for (auto it = connectedNodesList.begin(); it != connectedNodesList.end(); ++it) {
+    Serial.println(*it);
+  }
+  Serial.println("Nodes that sent a message:");
+  for (auto it = messageSenderNodes.begin(); it != messageSenderNodes.end(); ++it) {
+    Serial.println(*it);
+  }
+}
+
 void sendMessage()
 {
-  mesh.sendBroadcast( recievedMessage );
-  Serial.print("Mesh Broadcast - "); Serial.println(recievedMessage);
- taskSendMessage.setInterval((TASK_SECOND * 2));
+  
+  brodcast["data"] = recievedMessage;
+ 
+  
 }
 
 
 void receivedCallback( uint32_t from, String &msg )
 {
-  
-  
+   
+ messageSenderNodes.push_back(from);
+
     }
 
 
 
 
 void newConnectionCallback(uint32_t nodeId) {
-  //Serial.printf("--> startHere: New Connection, nodeId = %u\n", nodeId);
+ 
 }
 
 void changedConnectionCallback() {
@@ -78,33 +100,50 @@ void setup() {
   mesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
 
   userScheduler.addTask( taskSendMessage );
- 
+  
   taskSendMessage.enable();
  Serial.println("UART Sender/Receiver 1 Initialized");
-  // timer.setInterval(1000L, send_request);
+  
 }
 
 void loop()
 {
 
     if (Serial2.available() > 0) {
+     
    recievedMessage = Serial2.readString().c_str();  
   DeserializationError error = deserializeJson(receivedDoc, recievedMessage);
    Serial.print("board 1 Reciever - "); Serial.println(recievedMessage);
       
   }
-  if ( recievedMessage != "" && !recievedMessage.equals(prevMessage))
-  {
-    prevMessage = recievedMessage ;
-    mesh.update();
-   recievedMessage = "";
-
-  }
-  else {
-    Serial.println("No message to broadcast");
-  }
+  nodesConnected();
+   mesh.update();
   
   
   delay(2000);
   
 }
+
+
+
+
+// update condition 
+
+  // if ( recievedMessage != "" && !recievedMessage.equals(prevMessage) && !message_received)
+  // {
+  //  if (message_received)
+  //  {
+  //  prevMessage = recievedMessage ;
+  //  message_received = false ; 
+  //    recievedMessage = "";
+  //  }
+   
+   
+  //   mesh.update();
+ 
+
+  // }
+  // else {
+  //   Serial.println("No message to broadcast");
+  // }
+  

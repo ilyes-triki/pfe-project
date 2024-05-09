@@ -7,7 +7,7 @@
 
 
 struct Variables{
-    int  status , localarraySize , mode ;
+    int  localarraySize , mode ;
     bool SignUp , fetched;
     unsigned long sendDataPrevMillis;
 };
@@ -20,7 +20,7 @@ struct ArrayInfo {
 
 
 ArrayInfo getArray(FirebaseData &fbdo);
-void sendLocalMessage( int mode , int status);
+void sendLocalMessage( int mode );
 void recieveLocalMessage();
 int getMode(FirebaseData &fbdo);
 int getStatus(FirebaseData &fbdo);

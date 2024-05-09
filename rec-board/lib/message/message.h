@@ -6,16 +6,17 @@
 
 struct MessageArguments {
 	constexpr static int ldrpin = 34;
+	constexpr static int ldrpinLampe = 32;
 	constexpr static int led = 12;
 	constexpr static int boardnum = 2;
-	int led_status = 0;
+	bool recieved , sended ;
 	int mode;
 	String jsonRec;
 	String jsonBrod;
 };
 
 
-void testMessage(  DynamicJsonDocument& receivedDoc );
+void addArrayToMessage(  DynamicJsonDocument& receivedDoc );
 void testModes ( DynamicJsonDocument& receivedDoc ) ;
 
 #endif

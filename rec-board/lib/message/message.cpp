@@ -4,27 +4,26 @@
   
 MessageArguments args ;
 
-void testMessage(DynamicJsonDocument& receivedDoc) {
+void addArrayToMessage(DynamicJsonDocument& receivedDoc) {
   if (receivedDoc.containsKey("boards_info")) {
     JsonArray boards_info = receivedDoc["boards_info"].as<JsonArray>();
     bool boardFound = false;
     for (JsonObject board : boards_info) {
       if (board["board_number"] == args.boardnum) {
         boardFound = true;
-        board["led_status"] = args.led_status;
         break;
       }
     }
     if (!boardFound) {
       JsonObject newBoard = boards_info.createNestedObject();
       newBoard["board_number"] = args.boardnum;
-      newBoard["led_status"] = args.led_status;
+      newBoard["led_status"] =  "La lampe de cette caret n'est pas allumé";
     }
   } else {
     JsonArray boards_info = receivedDoc.createNestedArray("boards_info");
     JsonObject newBoard = boards_info.createNestedObject();
     newBoard["board_number"] = args.boardnum;
-    newBoard["led_status"] = args.led_status;
+    newBoard["led_status"] = "La lampe de cette caret n'est pas allumé";
   }
 }
 
@@ -32,20 +31,46 @@ void testMessage(DynamicJsonDocument& receivedDoc) {
 void testModes (DynamicJsonDocument& receivedDoc ) {
 //  Nedded data
 int ldrValue = analogRead(args.ldrpin);
+int ldrLampeValue = analogRead(args.ldrpinLampe);
+
 args.mode = receivedDoc["mode"].as<int>() ;
-args.led_status = receivedDoc["status"];
+
 
 
 // Serial messages
 Serial.print("ldr value : ");
   Serial.println(ldrValue);
-Serial.print("ledstatus: ");
-  Serial.println(args.led_status);
+  Serial.print("ldrlampe value : ");
+  Serial.println(ldrLampeValue);
 Serial.print("mode: ");
   Serial.println(args.mode);
 Serial.println("board number is : ") ;
  Serial.println(args.boardnum);
 
+// Mode Monotone = 1
+        
+         if (args.mode == 1 && ldrValue > 2000)
+       {
+        digitalWrite(args.led , 1);
+       }
+       else {
+ digitalWrite(args.led , 0);
+       }
+       // Mode all-on
+
+         if (args.mode == 5) {
+      
+            digitalWrite(args.led , 1) ; }
+
+
+
+
+// Mode all-off
+
+       if (args.mode == 6)
+       {
+      
+            digitalWrite(args.led , 0) ; }
 
 
 // Conditions
@@ -53,12 +78,7 @@ if (receivedDoc.containsKey("board_status")) {
       JsonArray board_status = receivedDoc["board_status"].as<JsonArray>();  
 
 
-// Mode Monotone = 1
-        
-         if (args.mode == 1 && ldrValue < 1000)
-       {
-        digitalWrite(args.led , args.led_status);
-       }
+
 
 
 // Mode Specific-monotone = 2
@@ -73,7 +93,7 @@ if (receivedDoc.containsKey("board_status")) {
         }
           if (found && ldrValue>1500)
           {
-            digitalWrite(args.led , args.led_status) ; 
+            digitalWrite(args.led , 1) ; 
           }else {
              digitalWrite(args.led , 0) ; 
           }}
@@ -90,7 +110,7 @@ if (receivedDoc.containsKey("board_status")) {
             }
         } if (found)
           {
-            digitalWrite(args.led , args.led_status) ; 
+            digitalWrite(args.led ,1) ; 
           }else {
              digitalWrite(args.led , 0) ;  }}
 
@@ -108,27 +128,12 @@ if (receivedDoc.containsKey("board_status")) {
             }
         } if (!found)
           {
-            digitalWrite(args.led , args.led_status) ; 
+            digitalWrite(args.led , 1) ; 
           }else {
              digitalWrite(args.led , 0) ; }}
 
 
 
-// Mode all-on
-
-         if (args.mode == 5) {
-      
-            digitalWrite(args.led , 1) ; }
-
-
-
-
-// Mode all-off
-
-       if (args.mode == 6)
-       {
-      
-            digitalWrite(args.led , 0) ; }
 
   
    }
