@@ -1,0 +1,16 @@
+{
+  "folders": [
+	{
+		"path": "../../../../Documents/PlatformIO/Projects/pfe/firebase-connection"
+	},
+	{
+		"name": "broadcaster",
+		"path": "../../broadcaster"
+	},
+	{
+		"name": "rec-board",
+		"path": ".."
+	}
+],
+  "settings": {}
+}

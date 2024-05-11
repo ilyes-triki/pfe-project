@@ -7,50 +7,64 @@
 // WiFi Credentials
 #define   MESH_PREFIX     "whateverYouLike"
 #define   MESH_PASSWORD   "somethingSneaky"
-#define   MESH_PORT       5555
+#define   MESH_PORT        5555
 
 
 
-
-
-
-
+int nodesReceived = 0;
 MessageArguments arguments;
-DynamicJsonDocument receivedDoc(1024);
+DynamicJsonDocument receivedDoc(1024) ;
 Scheduler userScheduler; 
 painlessMesh  mesh;
-int ldrLmapeValue = analogRead(arguments.ldrpinLampe);
+
 
 
 void sendMessage() ; 
 
-Task taskSendMessage( TASK_SECOND * 3, TASK_FOREVER, &sendMessage );
+Task taskSendMessage( TASK_SECOND * 2, TASK_FOREVER, &sendMessage );
 
 void sendMessage()
-{
-  
- 
-
-
+{if (receivedDoc.isNull() ) {
+    
+        Serial.println("No stored message to broadcast.");
+        return;
+    }
+   if ((nodesReceived != mesh.getNodeList().size() &&  !mesh.getNodeList().empty())  ) { 
+ String jsonBrod = checkIfWorking(receivedDoc);
+    mesh.sendBroadcast(jsonBrod);
+  Serial.print("Mesh Broadcast - ");
+    Serial.println(jsonBrod);
+        }else {
+Serial.println("All nodes have received the message.");
+        }
 }
 
 
 void receivedCallback( uint32_t from, String &msg )
 {
-  
+   if (msg == "ACK") { 
+        nodesReceived++;
+    } else {
       
+      int nodesReceived = 0;
+      arguments.jsonRec = msg.c_str();
+  DeserializationError error = deserializeJson(receivedDoc, arguments.jsonRec);
+  Serial.print("Mesh Reciever - "); Serial.println(arguments.jsonRec);
+   mesh.sendSingle(from, "ACK");}
+  
    
+  
 }
 void newConnectionCallback(uint32_t nodeId) {
 
 }
 
 void changedConnectionCallback() {
-  //Serial.printf("Changed connections\n");
+  
 }
 
 void nodeTimeAdjustedCallback(int32_t offset) {
-  //Serial.printf("Adjusted time %u. Offset = %d\n", mesh.getNodeTime(), offset);
+  
 }
 
 void setup() {
@@ -75,9 +89,16 @@ void setup() {
 }
 
 void loop() {
-  // it will run the user scheduler as well
-  mesh.update();
-// testModes ( receivedDoc ) ; 
+  
+ 
+  if (!receivedDoc.isNull())
+  {
+   testModes ( receivedDoc ) ; 
+  }
+      mesh.update();
+        
+ 
+
 delay(3000);
     }
 
@@ -129,3 +150,13 @@ delay(3000);
   //   taskSendMessage.setInterval((TASK_SECOND * 3));
     
 
+   // Enable wakeup source for LDR
+            // esp_sleep_enable_ext0_wakeup(args.ldrpin, LOW);
+            // esp_deep_sleep_start();
+
+              // Check LDR value and put ESP32 to sleep if above 1000
+        // int ldrValue = analogRead(args.ldrpin);
+        // if (ldrValue > 1000) {
+        //     esp_sleep_enable_timer_wakeup(5 * 1000000); 
+        //     esp_deep_sleep_start();
+        // } 

@@ -99,11 +99,8 @@ if (fbdo.dataType() == "integer"){
 
 
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> ebdc1ecaa1cd4c2c1f07aed9e1bfc1e139810ac6
 
 //  fetching updating status from db
  bool getupdated(FirebaseData &fbdo){

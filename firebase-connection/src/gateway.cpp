@@ -7,10 +7,10 @@
 #include <ArduinoJson.h>
 #include "db-data.h"
 
-// #define WIFI_SSID "TT_91A8"
-// #define WIFI_PASSWORD "imcnlqw733"
-#define WIFI_SSID "OPPO A54"
-#define WIFI_PASSWORD "1234567890"
+#define WIFI_SSID "TT_91A8"
+#define WIFI_PASSWORD "imcnlqw733"
+// #define WIFI_SSID "OPPO A54"
+// #define WIFI_PASSWORD "1234567890"
 // #define WIFI_SSID "OPPO A78"
 // #define WIFI_PASSWORD "111111111"
 #define PROJECT_API_KEY "AIzaSyBcEzCBBWwtkvcBlmrWu3cNl7MHOF1lYz0"
@@ -77,7 +77,7 @@ Serial.println("UART Sender/Receiver 2 Initialized");
 
 void loop() {
   bool updated = getupdated(fbdo);
- delay(2000);
+ delay(5000);
 if (Firebase.ready() && vars.SignUp && (millis() - vars.sendDataPrevMillis > 1000 || vars.sendDataPrevMillis == 0)) {
     vars.sendDataPrevMillis = millis();
   if (updated)
@@ -88,8 +88,6 @@ if (Firebase.ready() && vars.SignUp && (millis() - vars.sendDataPrevMillis > 100
  vars.fetched = true ;
   } 
   
-
-
 }
 recieveLocalMessage();
 

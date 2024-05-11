@@ -21,16 +21,13 @@
 // Variables
 
 
-std::list<uint32_t> connectedNodesList , messageSenderNodes;  // List to store connected node IDs
 
 
  
 
-
-DynamicJsonDocument receivedDoc(1024) , receivedDocRec(1024) ,  brodcast(1024);
-String recievedMessage ,  prevMessage , recivedFromRec , sendedToReciever;
-
-   
+int nodesReceived = 0;
+DynamicJsonDocument receivedDoc(1024) , receivedDocRec(1024) ;
+String recievedMessage , receivedDocRecString , prevMessage = "" ;
 Scheduler userScheduler; 
 painlessMesh  mesh;
 
@@ -42,38 +39,38 @@ void sendMessage() ;
 Task taskSendMessage( TASK_SECOND * 2 , TASK_FOREVER, &sendMessage );
 
 
-void nodesConnected() {
 
-  // Update the list of connected nodes
-  auto nodeList = mesh.getNodeList();
-  connectedNodesList.assign(nodeList.begin(), nodeList.end());
-
-  // Print the list of connected nodes
-  Serial.println("Connected Nodes:");
-  for (auto it = connectedNodesList.begin(); it != connectedNodesList.end(); ++it) {
-    Serial.println(*it);
-  }
-  Serial.println("Nodes that sent a message:");
-  for (auto it = messageSenderNodes.begin(); it != messageSenderNodes.end(); ++it) {
-    Serial.println(*it);
-  }
-}
 
 void sendMessage()
 {
-  
-  brodcast["data"] = recievedMessage;
+   if ((nodesReceived != mesh.getNodeList().size() ||  mesh.getNodeList().empty()) && (recievedMessage != "" && recievedMessage != prevMessage) ) {
+              mesh.sendBroadcast(recievedMessage);
+ Serial.print("Sending messega - "); Serial.println(recievedMessage);
+        }else {
+          prevMessage = recievedMessage ; 
+          Serial.println("All nodes have received the message.");
+        }
  
   
+  
+ 
 }
+ 
+  
+
 
 
 void receivedCallback( uint32_t from, String &msg )
 {
-   
- messageSenderNodes.push_back(from);
+ if (msg == "ACK") { 
+        nodesReceived++;
+    }else {receivedDocRecString = msg.c_str();
+  DeserializationError error = deserializeJson(receivedDocRec, receivedDocRecString);
+  Serial.print("Mesh Reciever - "); Serial.println(receivedDocRecString);
+   mesh.sendSingle(from, "ACK");}
+    
 
-    }
+}
 
 
 
@@ -83,11 +80,11 @@ void newConnectionCallback(uint32_t nodeId) {
 }
 
 void changedConnectionCallback() {
-  //Serial.printf("Changed connections\n");
+ 
 }
 
 void nodeTimeAdjustedCallback(int32_t offset) {
-  //Serial.printf("Adjusted time %u. Offset = %d\n", mesh.getNodeTime(), offset);
+  
 }
 
 void setup() {
@@ -110,17 +107,19 @@ void loop()
 {
 
     if (Serial2.available() > 0) {
-     
+        nodesReceived = 0;
    recievedMessage = Serial2.readString().c_str();  
   DeserializationError error = deserializeJson(receivedDoc, recievedMessage);
    Serial.print("board 1 Reciever - "); Serial.println(recievedMessage);
-      
   }
-  nodesConnected();
-   mesh.update();
+     
+      mesh.update();
+   
+   
+
   
   
-  delay(2000);
+  delay(3000);
   
 }
 
@@ -129,17 +128,17 @@ void loop()
 
 // update condition 
 
-  // if ( recievedMessage != "" && !recievedMessage.equals(prevMessage) && !message_received)
+  // if ( recievedMessage != "" && !recievedMessage.equals(prevMessage))
   // {
-  //  if (message_received)
+  // 
   //  {
   //  prevMessage = recievedMessage ;
-  //  message_received = false ; 
+  //     mesh.update();
   //    recievedMessage = "";
   //  }
    
    
-  //   mesh.update();
+
  
 
   // }

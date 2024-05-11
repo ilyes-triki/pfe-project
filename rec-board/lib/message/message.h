@@ -9,13 +9,13 @@ struct MessageArguments {
 	constexpr static int ldrpinLampe = 32;
 	constexpr static int led = 12;
 	constexpr static int boardnum = 2;
-	bool recieved , sended ;
+	bool working = true;
 	int mode;
 	String jsonRec;
 	String jsonBrod;
 };
 
-
+String checkIfWorking (DynamicJsonDocument& receivedDoc) ;
 void addArrayToMessage(  DynamicJsonDocument& receivedDoc );
 void testModes ( DynamicJsonDocument& receivedDoc ) ;
 

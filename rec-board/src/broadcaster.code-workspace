@@ -1,15 +1,16 @@
 {
   "folders": [
 	{
-		"path": "../../rec-board"
-	},
-	{
 		"name": "broadcaster",
-		"path": ".."
+		"path": "../../broadcaster"
 	},
 	{
 		"name": "firebase-connection",
 		"path": "../../firebase-connection"
+	},
+	{
+		"name": "rec-board",
+		"path": ".."
 	}
 ],
   "settings": {}
