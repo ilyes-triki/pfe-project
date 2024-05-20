@@ -52,7 +52,7 @@ Serial.println("board number is : ") ;
         
          if (args.mode == 1 && ldrValue < 2000)
        {
-          if (ldrLampeValue > 1000)
+          if (ldrLampeValue < 1000)
             {
              args.working = false;
             }else {
@@ -66,7 +66,7 @@ Serial.println("board number is : ") ;
      // Mode all-on = 5
 
          if (args.mode == 5) {
-            if (ldrLampeValue > 1000 && ldrValue<1500)
+            if (ldrLampeValue < 1000 && ldrValue<1500)
             {
              args.working = false;
             }else {
@@ -81,7 +81,7 @@ Serial.println("board number is : ") ;
 // Mode all-off = 6
 
        if (args.mode == 6)
-       {   if (ldrLampeValue > 1000 && ldrValue<1500)
+       {   if (ldrLampeValue < 1000 && ldrValue<1500)
             {
              args.working = false;
             }else {
@@ -113,7 +113,7 @@ if (receivedDoc.containsKey("board_status")) {
         }
           if (found && ldrValue<1500)
           {
-            if (ldrLampeValue > 1000)
+            if (ldrLampeValue < 1000)
             {
              args.working = false;
             }else {
@@ -138,7 +138,7 @@ if (receivedDoc.containsKey("board_status")) {
             }
         } if (found)
           {
-              if (ldrLampeValue > 1000 && ldrValue<1500)
+              if (ldrLampeValue < 1000 && ldrValue<1500)
             {
              args.working = false;
             }else {
@@ -163,7 +163,7 @@ if (receivedDoc.containsKey("board_status")) {
             }
         } if (found)
           {
-              if (ldrLampeValue > 1000 && ldrValue<1500)
+              if (ldrLampeValue < 1000 && ldrValue<1500)
             {
              args.working = false;
             }else {
@@ -182,14 +182,16 @@ if (receivedDoc.containsKey("board_status")) {
 
 
 
-String checkIfWorking (DynamicJsonDocument& receivedDoc) {
+String checkIfWorking (DynamicJsonDocument& receivedDoc , DynamicJsonDocument& receivedDocBrod ) {
 if (args.working == 0)
 {
-  addArrayToMessage( receivedDoc) ; 
-    serializeJson(receivedDoc, args.jsonBrod);
+  addArrayToMessage( receivedDocBrod) ; 
+    serializeJson(receivedDocBrod, args.jsonBrodError);
+    serializeJson(receivedDoc, args.jsonBrodMsg);
+
 }
 else {
-  serializeJson(receivedDoc, args.jsonBrod);
+  serializeJson(receivedDoc, args.jsonBrodMsg);
 }
 
 

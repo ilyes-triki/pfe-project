@@ -13,7 +13,7 @@
 
 int nodesReceived = 0;
 MessageArguments arguments;
-DynamicJsonDocument receivedDoc(1024) ;
+DynamicJsonDocument receivedDoc(1024) ,receivedDocBrod(1024) ;
 Scheduler userScheduler; 
 painlessMesh  mesh;
 
@@ -30,7 +30,7 @@ void sendMessage()
         return;
     }
    if ((nodesReceived != mesh.getNodeList().size() &&  !mesh.getNodeList().empty())  ) { 
- String jsonBrod = checkIfWorking(receivedDoc);
+ String jsonBrod = checkIfWorking(receivedDoc , receivedDocBrod) ;
     mesh.sendBroadcast(jsonBrod);
   Serial.print("Mesh Broadcast - ");
     Serial.println(jsonBrod);
