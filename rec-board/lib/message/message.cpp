@@ -1,10 +1,12 @@
 
 #include "message.h"
 
-  
+
+
+
 MessageArguments args ;
 
-void addArrayToMessage(DynamicJsonDocument& receivedDoc) {
+void addArrayToMessage(JsonDocument& receivedDoc) {
   if (receivedDoc.containsKey("boards_info") ) {
     JsonArray boards_info = receivedDoc["boards_info"].as<JsonArray>();
     bool boardFound = false;
@@ -28,7 +30,7 @@ void addArrayToMessage(DynamicJsonDocument& receivedDoc) {
 }
 
 
-void testModes (DynamicJsonDocument& receivedDoc ) {
+void testModes (JsonDocument& receivedDoc ) {
 //  Nedded data
 int ldrValue = analogRead(args.ldrpin);
 int ldrLampeValue = analogRead(args.ldrpinLampe);
@@ -50,15 +52,17 @@ Serial.println("board number is : ") ;
 
 // Mode Monotone = 1
         
-         if (args.mode == 1 && ldrValue < 2000)
+         if (args.mode == 1 && ldrValue < 1000)
        {
+        digitalWrite(args.led , 1);
+      
           if (ldrLampeValue < 1000)
             {
              args.working = false;
             }else {
                 args.working = true;
             }
-        digitalWrite(args.led , 1);
+        
        }
        else {
  digitalWrite(args.led , 0);
@@ -66,14 +70,16 @@ Serial.println("board number is : ") ;
      // Mode all-on = 5
 
          if (args.mode == 5) {
-            if (ldrLampeValue < 1000 && ldrValue<1500)
+           digitalWrite(args.led , 1) ;
+        
+            if (ldrLampeValue < 1000 && ldrValue<1000)
             {
              args.working = false;
             }else {
                 args.working = true;
             }
       
-            digitalWrite(args.led , 1) ; }
+          }
 
 
 
@@ -81,14 +87,12 @@ Serial.println("board number is : ") ;
 // Mode all-off = 6
 
        if (args.mode == 6)
-       {   if (ldrLampeValue < 1000 && ldrValue<1500)
-            {
-             args.working = false;
-            }else {
-                args.working = true;
-            }
+       {   
+        
+         digitalWrite(args.led , 0) ;
       
-            digitalWrite(args.led , 0) ; } 
+      
+            } 
 
   
  
@@ -111,8 +115,11 @@ if (receivedDoc.containsKey("board_status")) {
                 break;
             }
         }
-          if (found && ldrValue<1500)
+          if (found && ldrValue<1000)
           {
+              digitalWrite(args.led , 1) ; 
+
+
             if (ldrLampeValue < 1000)
             {
              args.working = false;
@@ -120,7 +127,7 @@ if (receivedDoc.containsKey("board_status")) {
                 args.working = true;
             }
             
-            digitalWrite(args.led , 1) ; 
+          
           }else {
           
              digitalWrite(args.led , 0) ; 
@@ -136,15 +143,17 @@ if (receivedDoc.containsKey("board_status")) {
                 found = true;
                 break;
             }
-        } if (found)
+        } if (found )
           {
-              if (ldrLampeValue < 1000 && ldrValue<1500)
+             digitalWrite(args.led , 1) ; 
+
+              if (ldrLampeValue < 1000 && ldrValue<1000)
             {
              args.working = false;
             }else {
                 args.working = true;
             }
-            digitalWrite(args.led , 1) ; 
+            
           }else {
              
              digitalWrite(args.led , 0) ;  }}
@@ -163,13 +172,10 @@ if (receivedDoc.containsKey("board_status")) {
             }
         } if (found)
           {
-              if (ldrLampeValue < 1000 && ldrValue<1500)
-            {
-             args.working = false;
-            }else {
-                args.working = true;
-            }
-            digitalWrite(args.led , 0) ; 
+             digitalWrite(args.led , 0) ; 
+
+             
+           
           }else {
              
              digitalWrite(args.led , 1) ; }}
@@ -182,21 +188,21 @@ if (receivedDoc.containsKey("board_status")) {
 
 
 
-String checkIfWorking (DynamicJsonDocument& receivedDoc , DynamicJsonDocument& receivedDocBrod ) {
+
+String checkIfWorking ( JsonDocument& brodDoc ) {
 if (args.working == 0)
 {
-  addArrayToMessage( receivedDocBrod) ; 
-    serializeJson(receivedDocBrod, args.jsonBrodError);
-    serializeJson(receivedDoc, args.jsonBrodMsg);
+  addArrayToMessage( brodDoc) ; 
+    serializeJson(brodDoc, args.jsonBrodError);
+ 
+}
+else
+{
+ 
+  args.jsonBrodError = "pas de panne détectée";
 
 }
-else {
-  serializeJson(receivedDoc, args.jsonBrodMsg);
-}
 
-
-
-
-return args.jsonBrod ;
+return args.jsonBrodError;
 
 }

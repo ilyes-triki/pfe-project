@@ -12,11 +12,11 @@ struct MessageArguments {
 	bool working = true;
 	int mode;
 	String jsonRec;
-	String jsonBrod , jsonBrodError , jsonBrodMsg;
+	String jsonBrod , jsonBrodError ;
 };
 
-String checkIfWorking (DynamicJsonDocument& receivedDoc , DynamicJsonDocument& receivedDocBrod) ;
-void addArrayToMessage(  DynamicJsonDocument& receivedDoc );
-void testModes ( DynamicJsonDocument& receivedDoc ) ;
+String checkIfWorking ( JsonDocument& brodDoc ) ;
+void addArrayToMessage(  JsonDocument& receivedDoc );
+void testModes ( JsonDocument& receivedDoc ) ;
 
 #endif

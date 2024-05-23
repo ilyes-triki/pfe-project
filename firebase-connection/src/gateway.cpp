@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <WiFi.h>
+#include <firestore/FB_Firestore.h>
 #include <Firebase.h>
 #include <Firebase_ESP_Client.h>
 #include <addons/TokenHelper.h>
@@ -29,7 +30,8 @@ FirebaseAuth auth ;
 FirebaseConfig config ;
 
 
-
+DynamicJsonDocument receivedDoc(1024) ;
+String recievedMessage ;
 ArrayInfo fetchedArray ;
 Variables vars ;
 
@@ -76,8 +78,12 @@ Serial.println("UART Sender/Receiver 2 Initialized");
 
 
 void loop() {
+
+
+
+ recievedMessage = recieveLocalMessage(receivedDoc);
   bool updated = getupdated(fbdo);
- delay(5000);
+ delay(2000);
 if (Firebase.ready() && vars.SignUp && (millis() - vars.sendDataPrevMillis > 1000 || vars.sendDataPrevMillis == 0)) {
     vars.sendDataPrevMillis = millis();
   if (updated)
@@ -89,12 +95,8 @@ if (Firebase.ready() && vars.SignUp && (millis() - vars.sendDataPrevMillis > 100
   } 
   
 }
-recieveLocalMessage();
-
-
-
 if (updated &&  vars.fetched )
-{
+{ 
   sendLocalMessage(vars.mode );
   if (vars.fetched ) {
   Firebase.RTDB.setBool(&fbdo , "options/updated" , false ); 

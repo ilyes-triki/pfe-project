@@ -72,13 +72,15 @@ void sendLocalMessage(int mode )
 
 // reading urat message
 
-void recieveLocalMessage(){
-
+String recieveLocalMessage(DynamicJsonDocument& receivedDoc ){
+ String recievedMessage ;
 if (Serial2.available() > 0) {
-    String message = Serial2.readString();  
-    Serial.println("Received message: " ); Serial.print(message);
+       
+   recievedMessage = Serial2.readString().c_str();  
+  DeserializationError error = deserializeJson(receivedDoc, recievedMessage);
+   Serial.print("board 2 Reciever - "); Serial.println(recievedMessage);
   }
-
+   return recievedMessage ;
 
 }
 

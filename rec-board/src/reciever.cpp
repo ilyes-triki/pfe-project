@@ -9,58 +9,95 @@
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT        5555
 
+struct Nodes
+{
+  // 1
+  // unsigned long Nextnode = 3088934229 ;
+  // unsigned long PrevNode =3088937649 ;
 
 
-int nodesReceived = 0;
-MessageArguments arguments;
-DynamicJsonDocument receivedDoc(1024) ,receivedDocBrod(1024) ;
-Scheduler userScheduler; 
+// 2
+  unsigned long Nextnode = 0 ;
+  unsigned long PrevNode =532235501 ;
+};
+Nodes nodes ;
 painlessMesh  mesh;
+String msgDePanne  ;
+int nextNodeReceived = 0 , prevNodeRecieved = 0 ;
+MessageArguments arguments;
+JsonDocument receivedDoc,brodDoc ;
+Scheduler userScheduler; 
+ 
+
 
 
 
 void sendMessage() ; 
 
-Task taskSendMessage( TASK_SECOND * 2, TASK_FOREVER, &sendMessage );
+Task taskSendMessage( TASK_SECOND * 1, TASK_FOREVER, &sendMessage );
 
 void sendMessage()
-{if (receivedDoc.isNull() ) {
+{
+  if (receivedDoc.isNull() ) {
     
         Serial.println("No stored message to broadcast.");
         return;
     }
-   if ((nodesReceived != mesh.getNodeList().size() &&  !mesh.getNodeList().empty())  ) { 
- String jsonBrod = checkIfWorking(receivedDoc , receivedDocBrod) ;
-    mesh.sendBroadcast(jsonBrod);
-  Serial.print("Mesh Broadcast - ");
-    Serial.println(jsonBrod);
-        }else {
-Serial.println("All nodes have received the message.");
-        }
+   if (prevNodeRecieved < 1  && msgDePanne!="pas de panne détectée") {
+mesh.sendSingle(nodes.PrevNode, msgDePanne );
+  Serial.print("Mesh Broadcast to the previous node - ");
+    Serial.println(msgDePanne );
+
+   } else {
+          Serial.println("message de panne deliveré.");
+   }
+    if (nextNodeReceived < 1 && !arguments.jsonRec.isEmpty() && nodes.Nextnode != 0) {
+mesh.sendSingle(nodes.Nextnode , arguments.jsonRec );
+  Serial.print("Mesh Broadcast to the next node - ");
+    Serial.println(arguments.jsonRec);
+
+   } else {
+          Serial.println("message de panne deliveré."); 
+   }
+        
+         
+   
+
+
+
+   
 }
 
 
 void receivedCallback( uint32_t from, String &msg )
 {
-   if (msg == "ACK") { 
-        nodesReceived++;
-    } else {
-      
-      int nodesReceived = 0;
-      arguments.jsonRec = msg.c_str();
-  DeserializationError error = deserializeJson(receivedDoc, arguments.jsonRec);
-  Serial.print("Mesh Reciever - "); Serial.println(arguments.jsonRec);
-   mesh.sendSingle(from, "ACK");}
-  
-   
-  
+    if (msg == "ACKFROMNEXT") { 
+        nextNodeReceived++;
+    } else if (msg == "ACKFROMPREV") {
+       prevNodeRecieved++;
+    } else if (from == nodes.PrevNode){
+        arguments.jsonRec = msg.c_str();
+        
+            nextNodeReceived = 0;
+            deserializeJson(receivedDoc, arguments.jsonRec);
+            Serial.print("Mesh Reciever from prev - ");
+            Serial.println(arguments.jsonRec);
+            mesh.sendSingle(from, "ACKFROMNEXT" );
+        }else {
+           arguments.jsonBrodError = msg.c_str();
+            prevNodeRecieved = 0;
+            deserializeJson(receivedDoc, msgDePanne);
+            Serial.print("Mesh Reciever from next- ");
+            Serial.println(msgDePanne);
+            mesh.sendSingle(from, "ACKFROMPREV" );
+        }
 }
 void newConnectionCallback(uint32_t nodeId) {
+  // Serial.print("brodcaster id - "); Serial.println(nodeId);
 
 }
 
 void changedConnectionCallback() {
-  
 }
 
 void nodeTimeAdjustedCallback(int32_t offset) {
@@ -79,10 +116,10 @@ void setup() {
   //mesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
   mesh.setDebugMsgTypes( ERROR | STARTUP );  // set before init() so that you can see startup messages
   mesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT );
-  mesh.onReceive(&receivedCallback);
-  mesh.onNewConnection(&newConnectionCallback);
-  mesh.onChangedConnections(&changedConnectionCallback);
-  mesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
+ mesh.onReceive(&receivedCallback);
+ mesh.onNewConnection(&newConnectionCallback);
+ mesh.onChangedConnections(&changedConnectionCallback);
+ mesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
 
   userScheduler.addTask( taskSendMessage );
   taskSendMessage.enable();
@@ -94,69 +131,18 @@ void loop() {
   if (!receivedDoc.isNull())
   {
    testModes ( receivedDoc ) ; 
+   msgDePanne =   checkIfWorking(brodDoc ) ;
+   
+   
   }
+
       mesh.update();
         
  
 
-delay(3000);
+delay(500);
     }
 
 
 
 
-// recievecall back 
-
-
-
-// arguments.jsonRec = msg.c_str();
-  // DeserializationError error = deserializeJson(receivedDoc, arguments.jsonRec);
-   
-
-  // Serial.print("Mesh Reciever - "); Serial.println(arguments.jsonRec);
-  // if (error)
-  // {
-  //   Serial.print("deserializeJson() failed: ");
-  //   Serial.println(error.c_str());
-  // }
-
-
-
-  // send 
-
-//   if (receivedDoc.isNull() ) {
-  //     arguments.recieved = false ;
-  //       Serial.println("No stored message to broadcast.");
-  //       return;
-  //   }
-  //   arguments.recieved = true ;
-  //   receivedDoc["message_received"] = arguments.recieved ;
-  // if (ldrLmapeValue > 100)
-  // {
-  //  addArrayToMessage( receivedDoc) ; 
-  //  serializeJson(receivedDoc, arguments.jsonBrod);
-  //  arguments.recieved = false ; 
-  //   mesh.sendBroadcast(arguments.jsonBrod);
-  // }
-  // else {
-  //   serializeJson(receivedDoc, arguments.jsonBrod);
-  //  arguments.recieved = false ; 
-  //   mesh.sendBroadcast(arguments.jsonBrod);
-  // }
-   
-   
-  //   Serial.print("Mesh Broadcast - ");
-  //   Serial.println(arguments.jsonBrod);
-  //   taskSendMessage.setInterval((TASK_SECOND * 3));
-    
-
-   // Enable wakeup source for LDR
-            // esp_sleep_enable_ext0_wakeup(args.ldrpin, LOW);
-            // esp_deep_sleep_start();
-
-              // Check LDR value and put ESP32 to sleep if above 1000
-        // int ldrValue = analogRead(args.ldrpin);
-        // if (ldrValue > 1000) {
-        //     esp_sleep_enable_timer_wakeup(5 * 1000000); 
-        //     esp_deep_sleep_start();
-        // } 

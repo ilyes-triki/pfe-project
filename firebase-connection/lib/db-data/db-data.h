@@ -21,7 +21,7 @@ struct ArrayInfo {
 
 ArrayInfo getArray(FirebaseData &fbdo);
 void sendLocalMessage( int mode );
-void recieveLocalMessage();
+String recieveLocalMessage(DynamicJsonDocument& receivedDoc );
 int getMode(FirebaseData &fbdo);
 int getStatus(FirebaseData &fbdo);
 bool getupdated(FirebaseData &fbdo) ;
