@@ -25,6 +25,7 @@ String recieveLocalMessage(DynamicJsonDocument& receivedDoc );
 int getMode(FirebaseData &fbdo);
 int getStatus(FirebaseData &fbdo);
 bool getupdated(FirebaseData &fbdo) ;
+void saveToFirestore( DynamicJsonDocument& receivedDoc , FirebaseData &fbdo);
 
 
 #endif

@@ -115,3 +115,24 @@ if (fbdo.dataType() == "boolean"  ){
   }
 };
 
+// saving data to firestore
+void saveToFirestore( DynamicJsonDocument& receivedDoc , FirebaseData &fbdo){
+ 
+ for (JsonObject element : receivedDoc["boards_info"].as<JsonArray>()) {
+ int boardNumber = element["board_number"];
+  const char* ledStatus = element["led_status"];
+
+
+ FirebaseJson content;
+  content.set("fields/board_number/integerValue", boardNumber);
+  content.set("fields/led_status/stringValue", ledStatus);
+  String boardNumberString = String(boardNumber) ;
+   String documentPath = "errorMessages/error-b" + boardNumberString ;
+    if (Firebase.Firestore.createDocument(&fbdo, "projet-pfe-68088", "", documentPath.c_str(), content.raw())) {
+    Serial.println("Message stored successfully in Firestore");
+  } else {
+    Serial.println("Failed to store message in Firestore");
+    Serial.println("Reason: " + fbdo.errorReason());
+  }
+ }
+};

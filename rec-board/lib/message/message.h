@@ -8,7 +8,7 @@ struct MessageArguments {
 	constexpr static int ldrpin = 34;
 	constexpr static int ldrpinLampe = 32;
 	constexpr static int led = 12;
-	constexpr static int boardnum = 2;
+	constexpr static int boardnum = 1;
 	bool working = true;
 	int mode;
 	String jsonRec;

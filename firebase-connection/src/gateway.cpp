@@ -31,7 +31,7 @@ FirebaseConfig config ;
 
 
 DynamicJsonDocument receivedDoc(1024) ;
-String recievedMessage ;
+String recievedMessage , prevRecievedMessage="" ;
 ArrayInfo fetchedArray ;
 Variables vars ;
 
@@ -82,6 +82,13 @@ void loop() {
 
 
  recievedMessage = recieveLocalMessage(receivedDoc);
+ if (!receivedDoc.isNull() && recievedMessage != prevRecievedMessage)
+ {
+  saveToFirestore( receivedDoc , fbdo);
+  recievedMessage = prevRecievedMessage ;
+ }
+ 
+ 
   bool updated = getupdated(fbdo);
  delay(2000);
 if (Firebase.ready() && vars.SignUp && (millis() - vars.sendDataPrevMillis > 1000 || vars.sendDataPrevMillis == 0)) {

@@ -19,13 +19,13 @@ void addArrayToMessage(JsonDocument& receivedDoc) {
     if (!boardFound) {
       JsonObject newBoard = boards_info.createNestedObject();
       newBoard["board_number"] = args.boardnum;
-      newBoard["led_status"] =  "La lampe de cette caret n'est pas allumé";
+      newBoard["led_status"] =  "La lampe de cette carte n'est pas allumé";
     }
   } else {
     JsonArray boards_info = receivedDoc.createNestedArray("boards_info");
     JsonObject newBoard = boards_info.createNestedObject();
     newBoard["board_number"] = args.boardnum;
-    newBoard["led_status"] = "La lampe de cette caret n'est pas allumé";
+    newBoard["led_status"] = "La lampe de cette carte n'est pas allumé";
   }
 }
 

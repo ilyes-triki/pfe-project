@@ -12,13 +12,13 @@
 struct Nodes
 {
   // 1
-  // unsigned long Nextnode = 3088934229 ;
-  // unsigned long PrevNode =3088937649 ;
+  unsigned long Nextnode = 3088934229 ;
+  unsigned long PrevNode =3088937649 ;
 
 
 // 2
-  unsigned long Nextnode = 0 ;
-  unsigned long PrevNode =532235501 ;
+  // unsigned long Nextnode = 0 ;
+  // unsigned long PrevNode =532235501 ;
 };
 Nodes nodes ;
 painlessMesh  mesh;
@@ -86,7 +86,7 @@ void receivedCallback( uint32_t from, String &msg )
         }else {
            arguments.jsonBrodError = msg.c_str();
             prevNodeRecieved = 0;
-            deserializeJson(receivedDoc, msgDePanne);
+            deserializeJson(brodDoc,  arguments.jsonBrodError);
             Serial.print("Mesh Reciever from next- ");
             Serial.println(msgDePanne);
             mesh.sendSingle(from, "ACKFROMPREV" );
@@ -130,9 +130,13 @@ void loop() {
  
   if (!receivedDoc.isNull())
   {
-   testModes ( receivedDoc ) ; 
+   testModes (receivedDoc) ; 
    msgDePanne =   checkIfWorking(brodDoc ) ;
-   
+     if (msgDePanne != "pas de panne détectée")
+     {
+      prevNodeRecieved = 0 ;
+     }
+     
    
   }
 

@@ -119,9 +119,9 @@ nodeList = mesh.getNodeList();
   DeserializationError error = deserializeJson(receivedDoc, recievedMessage);
    Serial.print("board 1 Reciever - "); Serial.println(recievedMessage);
   }
-     if (!receivedDocRecString.isEmpty() && receivedDocRecString != prevreceivedDocRecStringMessage)
+     if (!receivedDocRecString.isEmpty() )
    {
- 
+//  && receivedDocRecString != prevreceivedDocRecStringMessage
  if (receivedDocRec.containsKey("boards_info")) {
         doc["boards_info"] = receivedDocRec["boards_info"];
         serializeJson(doc , msg) ;
@@ -129,7 +129,7 @@ nodeList = mesh.getNodeList();
   Serial.println("sending message thru URAT");
   Serial.println(msg);
     }
-  prevreceivedDocRecStringMessage = receivedDocRecString ;
+  // prevreceivedDocRecStringMessage = receivedDocRecString ;
    }
       mesh.update();
    
