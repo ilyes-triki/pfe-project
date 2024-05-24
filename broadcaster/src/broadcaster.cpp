@@ -29,10 +29,10 @@
 
 int nodesReceived = 0;
 DynamicJsonDocument receivedDoc(1024) , receivedDocRec(1024) , doc(1024) ;
-String recievedMessage , msg , receivedDocRecString , prevMessage = "" , prevreceivedDocRecStringMessage = ""  ;
+String recievedMessage , msg , receivedDocRecString   ;
 Scheduler userScheduler; 
 painlessMesh  mesh;
- std::list<uint32_t> nodeList = mesh.getNodeList();
+ 
 
 
 
@@ -82,7 +82,7 @@ void receivedCallback( uint32_t from, String &msg )
 
 
 void newConnectionCallback(uint32_t nodeId) {
-  // Serial.print("reciever 1 id - "); Serial.println(nodeId);
+  Serial.print("reciever 1 id - "); Serial.println(nodeId);
  
 }
 
@@ -112,7 +112,7 @@ void setup() {
 
 void loop()
 {
-nodeList = mesh.getNodeList();
+
     if (Serial2.available() > 0) {
         nodesReceived = 0;
    recievedMessage = Serial2.readString().c_str();  
@@ -121,7 +121,7 @@ nodeList = mesh.getNodeList();
   }
      if (!receivedDocRecString.isEmpty() )
    {
-//  && receivedDocRecString != prevreceivedDocRecStringMessage
+
  if (receivedDocRec.containsKey("boards_info")) {
         doc["boards_info"] = receivedDocRec["boards_info"];
         serializeJson(doc , msg) ;
@@ -129,7 +129,7 @@ nodeList = mesh.getNodeList();
   Serial.println("sending message thru URAT");
   Serial.println(msg);
     }
-  // prevreceivedDocRecStringMessage = receivedDocRecString ;
+
    }
       mesh.update();
    

@@ -93,7 +93,7 @@ void receivedCallback( uint32_t from, String &msg )
         }
 }
 void newConnectionCallback(uint32_t nodeId) {
-  // Serial.print("brodcaster id - "); Serial.println(nodeId);
+  Serial.print("brodcaster id - "); Serial.println(nodeId);
 
 }
 
