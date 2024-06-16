@@ -5,6 +5,8 @@
 #include "painlessMesh.h"
 
 struct MessageArguments {
+	constexpr static int Pirpin = 13;
+
 	constexpr static int ldrpin = 34;
 	constexpr static int ldrpinLampe = 32;
 	constexpr static int led = 12;

@@ -34,6 +34,11 @@ void testModes (JsonDocument& receivedDoc ) {
 //  Nedded data
 int ldrValue = analogRead(args.ldrpin);
 int ldrLampeValue = analogRead(args.ldrpinLampe);
+int previousPirValue = 0 ;
+ int pirvalue = 0 ;
+ pirvalue = digitalRead(args.Pirpin) ;
+  int lampevalue = digitalRead(args.led);
+
 
 args.mode = receivedDoc["mode"].as<int>() ;
 
@@ -44,24 +49,24 @@ Serial.print("ldr value : ");
   Serial.println(ldrValue);
   Serial.print("ldrlampe value : ");
   Serial.println(ldrLampeValue);
-Serial.print("mode: ");
-  Serial.println(args.mode);
-Serial.println("board number is : ") ;
- Serial.println(args.boardnum);
- 
-
+if (pirvalue != previousPirValue) {
+    delay(50);  
+    pirvalue = digitalRead(args.Pirpin);  
+    if (pirvalue != previousPirValue) {
+      previousPirValue = pirvalue;
+     
+    } }
+ Serial.print("PIR Value: ");
+      Serial.println(pirvalue);
+      Serial.print("lampe Value: ");
+      Serial.println(lampevalue);
 // Mode Monotone = 1
         
-         if (args.mode == 1 && ldrValue < 1000)
+         if (args.mode == 1 && ldrValue < 1000 && pirvalue == 1)
        {
         digitalWrite(args.led , 1);
       
-          if (ldrLampeValue < 1000)
-            {
-             args.working = false;
-            }else {
-                args.working = true;
-            }
+        
         
        }
        else {
@@ -72,12 +77,7 @@ Serial.println("board number is : ") ;
          if (args.mode == 5) {
            digitalWrite(args.led , 1) ;
         
-            if (ldrLampeValue < 1000 && ldrValue<1000)
-            {
-             args.working = false;
-            }else {
-                args.working = true;
-            }
+           
       
           }
 
@@ -107,7 +107,7 @@ if (receivedDoc.containsKey("board_status")) {
 
 // Mode Specific-monotone = 2
 
-      if (args.mode == 2 ){
+      if (args.mode == 2  ){
         bool found = false;
         for (JsonVariant value : board_status) {
             if (value.is<int>() && value.as<int>() == args.boardnum) {
@@ -115,18 +115,12 @@ if (receivedDoc.containsKey("board_status")) {
                 break;
             }
         }
-          if (found && ldrValue<1000)
+          if (found && ldrValue<1000 && pirvalue == 1)
           {
               digitalWrite(args.led , 1) ; 
 
 
-            if (ldrLampeValue < 1000)
-            {
-             args.working = false;
-            }else {
-                args.working = true;
-            }
-            
+           
           
           }else {
           
@@ -147,12 +141,6 @@ if (receivedDoc.containsKey("board_status")) {
           {
              digitalWrite(args.led , 1) ; 
 
-              if (ldrLampeValue < 1000 && ldrValue<1000)
-            {
-             args.working = false;
-            }else {
-                args.working = true;
-            }
             
           }else {
              
@@ -190,7 +178,11 @@ if (receivedDoc.containsKey("board_status")) {
 
 
 String checkIfWorking ( JsonDocument& brodDoc ) {
-if (args.working == 0)
+  int ldrValue = analogRead(args.ldrpin);
+int ldrLampeValue = analogRead(args.ldrpinLampe);
+  int lampevalue = digitalRead(args.led);
+
+if (ldrLampeValue < 1000 && ldrValue<1000 && lampevalue == 1)
 {
   addArrayToMessage( brodDoc) ; 
     serializeJson(brodDoc, args.jsonBrodError);

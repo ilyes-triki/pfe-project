@@ -129,7 +129,7 @@ void loop()
   Serial.println("sending message thru URAT");
   Serial.println(msg);
     }
-
+receivedDocRecString = "" ;
    }
       mesh.update();
    

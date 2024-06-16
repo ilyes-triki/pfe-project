@@ -12,8 +12,8 @@
 struct Nodes
 {
   // 1
-  unsigned long Nextnode = 3088934229 ;
-  unsigned long PrevNode =3088937649 ;
+   int Nextnode = 3088934229 ;
+   int PrevNode =532289265 ;
 
 
 // 2
@@ -27,8 +27,6 @@ int nextNodeReceived = 0 , prevNodeRecieved = 0 ;
 MessageArguments arguments;
 JsonDocument receivedDoc,brodDoc ;
 Scheduler userScheduler; 
- 
-
 
 
 
@@ -108,7 +106,7 @@ void setup() {
   
 
   Serial.begin(115200);
-
+ pinMode(arguments.Pirpin, INPUT);
   pinMode(arguments.led, OUTPUT);
 
   digitalWrite(arguments.led,LOW);
@@ -130,6 +128,7 @@ void loop() {
  
   if (!receivedDoc.isNull())
   {
+
    testModes (receivedDoc) ; 
    msgDePanne =   checkIfWorking(brodDoc ) ;
      if (msgDePanne != "pas de panne détectée")
