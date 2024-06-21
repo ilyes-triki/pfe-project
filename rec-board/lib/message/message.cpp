@@ -182,7 +182,7 @@ String checkIfWorking ( JsonDocument& brodDoc ) {
 int ldrLampeValue = analogRead(args.ldrpinLampe);
   int lampevalue = digitalRead(args.led);
 
-if (ldrLampeValue < 1000 && ldrValue<1000 && lampevalue == 1)
+if (ldrLampeValue < 600 && ldrValue<1000 && lampevalue == 1)
 {
   addArrayToMessage( brodDoc) ; 
     serializeJson(brodDoc, args.jsonBrodError);

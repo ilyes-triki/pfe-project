@@ -13,12 +13,28 @@ struct Nodes
 {
   // 1
    int Nextnode = 3088934229 ;
-   int PrevNode =532289265 ;
+   int PrevNode =532179797 ;
+   int NextNextnode = 532289265 ;
+   int PrevPrevNode =0 ;
 
 
 // 2
-  // unsigned long Nextnode = 0 ;
-  // unsigned long PrevNode =532235501 ;
+  // unsigned long Nextnode = 532289265  ;
+  // unsigned long PrevNode = 532235501;
+  // int NextNextnode = 532150013 ;
+  //  int PrevPrevNode =532179797 ;
+//3 
+  //  int Nextnode = 532150013 ;
+  //  int PrevNode = 3088934229 ;
+  //  int NextNextnode = 0 ;
+  //  int PrevPrevNode =532235501 ;
+  
+// 4    
+// int Nextnode = 0 ;
+//    int PrevNode = 532289265  ;
+// int NextNextnode = 0 ;
+//    int PrevPrevNode =3088934229 ;
+
 };
 Nodes nodes ;
 painlessMesh  mesh;
@@ -55,16 +71,10 @@ mesh.sendSingle(nodes.Nextnode , arguments.jsonRec );
     Serial.println(arguments.jsonRec);
 
    } else {
-          Serial.println("message de panne deliveré."); 
-   }
-        
-         
-   
+          Serial.println("message deliveré."); 
+   }}
 
 
-
-   
-}
 
 
 void receivedCallback( uint32_t from, String &msg )
@@ -73,7 +83,7 @@ void receivedCallback( uint32_t from, String &msg )
         nextNodeReceived++;
     } else if (msg == "ACKFROMPREV") {
        prevNodeRecieved++;
-    } else if (from == nodes.PrevNode){
+    } else if (from == nodes.PrevNode || from == nodes.PrevPrevNode){
         arguments.jsonRec = msg.c_str();
         
             nextNodeReceived = 0;
